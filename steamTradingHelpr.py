@@ -42,7 +42,21 @@ collection_safehouse = (
 )
 
 collection_train = (
-
+    ["Nova","Polar Mesh",["FN","MW","FT","WW","BS"],"Consumer Grade","32"],
+    ["Dual Berettas","Colony",["FN","MW","FT","WW","BS"],"Consumer Grade","33"],
+    ["PP-Bizon","Urban Dashed",["FN","MW","FT","WW","BS"],"Consumer Grade","34"],
+    ["UMP-45","Urban DDPAT",["FN","MW","FT","WW","BS"],"Consumer Grade","35"],
+    ["Five-SeveN","Forest Night",["FN","MW","FT","WW","BS"],"Consumer Grade","36"],
+    ["G3SG1","Polar Camo",["FN","MW","FT","WW","BS"],"Consumer Grade","37"],
+    ["P90","Ash Wood",["FN","MW","FT","WW","BS"],"Industrial Grade","38"],
+    ["MAG-7","Metallic DDPAT",["FN","MW","FT","WW","BS"],"Industrial Grade","39"],
+    ["SCAR 20","Carbon Fiber",["FN","MW","FT","WW","BS"],"Industrial Grade","40"],
+    ["P250","Metallic DDPAT",["FN","MW","FT","WW","BS"],"Industrial Grade","41"],
+    ["MAC-10","Candy Apple",["FN","MW","FT","WW","BS"],"Industrial Grade","42"],
+    ["M4A4","Urban DDPAT",["FN","MW","FT","WW","BS"],"Industrial Grade","43"],
+    ["Sawed-Off","Amber Fade",["FN","MW","FT","WW"],"Mil-Spec","44"],
+    ["Desert Eagle","Urban Rubble",["FN","MW","FT","WW","BS"],"Mil-Spec","45"],
+    ["Tec-9","Red Quartz",["FN","MW","FT","WW","BS"],"Restricted","46"]
 )
 #####################################
 #####################################
@@ -80,13 +94,14 @@ class Dust_II(parentWeapon): # For D2 Collc. JUST FOR OBJECT #TBD
     collectionName = "The Dust II Collection"
 class safehouse(parentWeapon): # For SF Collc. JUST FOR OBJ #TBD
     collectionName = "The Safehouse Collection"
-
+class Train(parentWeapon):
+    collectionName = "The Train Collection"
 
 def displayCollection(globalCollectionName): #Displays Collection skins by taking argument as collection name. if passed allCol then displays all available collecotion
 
     if  globalCollectionName not in globalCollectionList: #Displays Error if not in Global Collection Lists
         print (f"{globalCollectionName} not in collection")
-    if globalCollectionName == "DustII" or globalCollectionName == "allCol" :
+    if globalCollectionName == "DustII" or globalCollectionName == "all" :
         print("Dust II Collection : ")
         for x in range(len(collection_dustII)):
             weC_dustII = Dust_II(collection_dustII[x][0],collection_dustII[x][1],collection_dustII[x][2],collection_dustII[x][3])
@@ -96,7 +111,7 @@ def displayCollection(globalCollectionName): #Displays Collection skins by takin
             print(f"{x+1}. {colorReciever}")
         print()
 
-    if globalCollectionName == "Safehouse" or globalCollectionName == "allCol" :
+    if globalCollectionName == "Safehouse" or globalCollectionName == "all" :
         print ("Safehouse Collection : ")
         for x in range (len(collection_safehouse)):
             weC_safehouse = safehouse(collection_safehouse[x][0],collection_safehouse[x][1],collection_safehouse[x][2],collection_safehouse[x][3])
@@ -104,10 +119,18 @@ def displayCollection(globalCollectionName): #Displays Collection skins by takin
             colorReciever = colorProvider(tempText,weC_safehouse.weSTier)
             print(f"{x+1}. {colorReciever}")
         print()
+    if globalCollectionName == "Train" or globalCollectionName == "all" :
+        print ("Train Collection : ")
+        for x in range (len(collection_train)):
+            weC_train = Train(collection_train[x][0],collection_train[x][1],collection_train[x][2],collection_train[x][3])
+            tempText = f"{weC_train.weName} | {weC_train.weSName}"
+            colorReciever = colorProvider(tempText,weC_train.weSTier)
+            print(f"{x+1}. {colorReciever}")
+        print()
     if globalCollectionName == "":
         pass
 
-print(getSkinsByWeapon("M4A1-S"))
+displayCollection("all")
 
 
 
