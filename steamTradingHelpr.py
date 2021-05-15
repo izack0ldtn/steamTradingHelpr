@@ -75,12 +75,15 @@ def colorProvider(str,tier): #Returns coloured text using colored module. Initia
 
 
 def getSkinsByWeapon(weaponName): #TODO
+    tempAppender = []
     for x in collection_dustII:
         if x[0] == weaponName:
-            return (f"{x[0]} | {x[1]}",x[3])
+            #return (f"{x[0]} | {x[1]}",x[3])
+            tempAppender.append([x[0],x[1],x[3]])
     for x in collection_safehouse:
         if x[0] == weaponName:
-            return (f"{x[0]} | {x[1]}",x[3])
+            tempAppender.append([x[0],x[1],x[3]])
+    return tempAppender
     pass
 #####################################
 #####################################
@@ -130,7 +133,7 @@ def displayCollection(globalCollectionName): #Displays Collection skins by takin
     if globalCollectionName == "":
         pass
 
-displayCollection("all")
+print(getSkinsByWeapon("M4A1-S")    )
 
 
 
