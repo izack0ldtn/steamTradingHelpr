@@ -79,10 +79,12 @@ def getSkinsByWeapon(weaponName): #TODO
     for x in collection_dustII:
         if x[0] == weaponName:
             #return (f"{x[0]} | {x[1]}",x[3])
-            tempAppender.append([x[0],x[1],x[3]])
+            tempStore = colorProvider(f"{x[0]} | {x[1]}",x[3])
+            tempAppender.append(tempStore)
     for x in collection_safehouse:
         if x[0] == weaponName:
-            tempAppender.append([x[0],x[1],x[3]])
+            tempStore = colorProvider(f"{x[0]} | {x[1]}", x[3])
+            tempAppender.append(tempStore)
     return tempAppender
     pass
 #####################################
@@ -133,7 +135,7 @@ def displayCollection(globalCollectionName): #Displays Collection skins by takin
     if globalCollectionName == "":
         pass
 
-print(getSkinsByWeapon("M4A1-S")    )
+print(getSkinsByWeapon("M4A1-S"))
 
 
 
