@@ -4,10 +4,11 @@ import requests
 #####################################
 globalCollectionList = ("DustII","Safehouse") #Collection Names of those colllec. which has data in proggram
 globalWeaponList = ("")
+globalWearList = ("Factory New","Minimal Wear","Field-Tested","Well-Worn","Battle-Scarred")
 #################################
 #Collection Data. Dont Modify . Danger!!!!!!! + To be modified to tuples for memory management
 collection_dustII = (
-    ["SCAR 20","Sand Mesh",["FN","MW","FT","WW","BS"],"Consumer Grade","1"],
+    ["SCAR-20","Sand Mesh",["FN","MW","FT","WW","BS"],"Consumer Grade","1"],
     ["Nova","Predator",["FN","MW","FT","WW","BS"],"Consumer Grade","2"],
     ["P90","Sand Spray",["FN","MW","FT","WW","BS"],"Consumer Grade","3"],
     ["MP9","Sand Dashed",["FN","MW","FT","WW","BS"],"Consumer Grade","4"],
@@ -26,7 +27,7 @@ collection_dustII = (
 )
 
 collection_safehouse = (
-    ["SCAR 20","Contractor", ["FN","MW","FT","WW","BS"],"Consumer Grade","17"],
+    ["SCAR-20","Contractor", ["FN","MW","FT","WW","BS"],"Consumer Grade","17"],
     ["Tec-9","Army Mesh",["FN","MW","FT","WW","BS"],"Consumer Grade","18"],
     ["SSG 08","Blue Spruce",["FN","MW","FT","WW","BS"],"Consumer Grade","19"],
     ["MP7", "Army Recon", ["FN","MW","FT","WW","BS"],"Consumer Grade","20"],
@@ -52,7 +53,7 @@ collection_train = (
     ["G3SG1","Polar Camo",["FN","MW","FT","WW","BS"],"Consumer Grade","37"],
     ["P90","Ash Wood",["FN","MW","FT","WW","BS"],"Industrial Grade","38"],
     ["MAG-7","Metallic DDPAT",["FN","MW","FT","WW","BS"],"Industrial Grade","39"],
-    ["SCAR 20","Carbon Fiber",["FN","MW","FT","WW","BS"],"Industrial Grade","40"],
+    ["SCAR-20","Carbon Fiber",["FN","MW","FT","WW","BS"],"Industrial Grade","40"],
     ["P250","Metallic DDPAT",["FN","MW","FT","WW","BS"],"Industrial Grade","41"],
     ["MAC-10","Candy Apple",["FN","MW","FT","WW","BS"],"Industrial Grade","42"],
     ["M4A4","Urban DDPAT",["FN","MW","FT","WW","BS"],"Industrial Grade","43"],
@@ -94,8 +95,48 @@ def getSkinsByWeapon(weaponName):
     if len(tempAppender)!=0:
         return tempAppender
     else:
-        return None
-    pass
+        return f"{weaponName} not in database."
+
+def linkBuilder(weaponName,weaponSkinName, weaponWear):
+    firstHolder = "https://steamcommunity.com/market/priceoverview/?currency=1&appid=730&market_hash_name="
+    splitedWeaponName = weaponName.split()
+    splitedWeaponSkinName = weaponSkinName.split()
+    splitableWears = [globalWearList[0],globalWearList[1]]
+    if weaponWear in splitableWears:
+        tempHolder = weaponWear.split()
+    if (len(splitedWeaponName) == 1 and len(splitedWeaponSkinName)==1) and (weaponWear not in splitableWears): ##NSNSNS 1
+        fLink = f"{firstHolder}{weaponName}%20%7C%20{weaponSkinName}%20%28{weaponWear}%29"
+        return fLink
+    if (len(splitedWeaponName)!=1 and len(splitedWeaponSkinName)!= 1) and (weaponWear in splitableWears): ##SSS 2
+        fLink = f"{firstHolder}{splitedWeaponName[0]}%20{splitedWeaponName[1]}%20%7C%20{splitedWeaponSkinName[0]}%20{splitedWeaponSkinName[1]}%20%28{tempHolder[0]}%20{tempHolder[1]}%29"
+        return fLink
+    if (len(splitedWeaponName) != 1 and len(splitedWeaponSkinName) != 1) and (weaponWear not in splitableWears): #SSNS 3
+        fLink = f"{firstHolder}{splitedWeaponName[0]}%20{splitedWeaponName[1]}%20%7C%20{splitedWeaponSkinName[0]}%20{splitedWeaponSkinName[1]}%20%28{weaponWear}%29"
+        return fLink
+    if (len(splitedWeaponName) != 1 and len(splitedWeaponSkinName) == 1) and (weaponWear not in splitableWears ): #SNSNS 4
+        fLink = f"{firstHolder}{splitedWeaponName[0]}%20{splitedWeaponName[1]}%20%7C%20{weaponSkinName}%20%28{weaponWear}%29"
+        return fLink
+    if (len(splitedWeaponName) == 1 and len(splitedWeaponSkinName) == 1 ) and (weaponWear in splitableWears):#NSNSS 5
+        fLink = f"{firstHolder}{weaponName}%20%7C%20{weaponSkinName}%20%28{tempHolder[0]}%20{tempHolder[1]}%29"
+        return fLink
+    if (len(splitedWeaponName) == 1 and len(splitedWeaponSkinName) != 1) and (weaponWear in splitableWears): #NSSS 6
+        fLink = f"{firstHolder}{weaponName}%20%7C%20{splitedWeaponSkinName[0]}%20{splitedWeaponSkinName[1]}%20%28{tempHolder[0]}%20{tempHolder[1]}%29"
+        return fLink
+    if(len(splitedWeaponName) == 1 and len(splitedWeaponSkinName) != 1) and (weaponWear not in splitableWears):#NSSNS 7
+        fLink = f"{firstHolder}{weaponName}%20%7C%20{splitedWeaponSkinName[0]}%20{splitedWeaponSkinName[1]}%20%28{weaponWear}%29"
+        return fLink
+    if(len(splitedWeaponName) != 1 and len(splitedWeaponSkinName) == 1) and (weaponWear in splitableWears):
+        fLink = f"{firstHolder}{splitedWeaponName[0]}%20{splitedWeaponName[1]}%20%7C%20{weaponSkinName}%20%28{tempHolder[0]}%20{tempHolder[1]}%29"
+        return fLink
+
+
+    if weaponWear not in globalWearList:
+        return f"{weaponWear} or {weaponName} {weaponSkinName} is not valid."
+    # if weaponWear == globalWearList[0] or weaponWear == globalWearList[1]:
+    #     tempHolder = weaponWear.split()
+    #     fLink = f"{firstHolder}{weaponName}%20%7C%20{weaponSkinName}%20%28{tempHolder[0]}%20{tempHolder[1]}%29"
+    #     return fLink
+
 #####################################
 #####################################
 class parentWeapon: # Base Class for Holding Skins. Made for inheritance.
@@ -153,7 +194,7 @@ def displayCollection(globalCollectionName): #Displays Collection skins by takin
 #             print(getSkinsByWeapon(command)[x])
 
 
-
+print(linkBuilder("SG 553","Cyrex","Minimal Wear"))
 
 
 
