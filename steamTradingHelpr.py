@@ -1,7 +1,9 @@
 from termcolor import colored #Colouring Text Module. To be replaced by proper module
+import requests
 #####################################
 #####################################
 globalCollectionList = ("DustII","Safehouse") #Collection Names of those colllec. which has data in proggram
+globalWeaponList = ("")
 #################################
 #Collection Data. Dont Modify . Danger!!!!!!! + To be modified to tuples for memory management
 collection_dustII = (
@@ -60,7 +62,7 @@ collection_train = (
 )
 #####################################
 #####################################
-def colorProvider(str,tier): #Returns coloured text using colored module. Initially made for displaycollection func.
+def colorProvider(str,tier): #Returns coloured text using colored module. Initially made for displaycollection func. Added to getskinsbyweapon
 
     if tier == "Consumer Grade":
         return colored(f"{str}", 'grey')
@@ -74,7 +76,7 @@ def colorProvider(str,tier): #Returns coloured text using colored module. Initia
         return colored(f"{str}", 'magenta')
 
 
-def getSkinsByWeapon(weaponName): #TODO
+def getSkinsByWeapon(weaponName):
     tempAppender = []
     for x in collection_dustII:
         if x[0] == weaponName:
@@ -85,7 +87,14 @@ def getSkinsByWeapon(weaponName): #TODO
         if x[0] == weaponName:
             tempStore = colorProvider(f"{x[0]} | {x[1]}", x[3])
             tempAppender.append(tempStore)
-    return tempAppender
+    for x in collection_train:
+        if x[0] == weaponName:
+            tempStore = colorProvider(f"{x[0]} | {x[1]}", x[3])
+            tempAppender.append(tempStore)
+    if len(tempAppender)!=0:
+        return tempAppender
+    else:
+        return None
     pass
 #####################################
 #####################################
@@ -132,10 +141,17 @@ def displayCollection(globalCollectionName): #Displays Collection skins by takin
             colorReciever = colorProvider(tempText,weC_train.weSTier)
             print(f"{x+1}. {colorReciever}")
         print()
-    if globalCollectionName == "":
+    if globalCollectionName == "": #TODO
         pass
 
-print(getSkinsByWeapon("M4A1-S"))
+# while True: # Command line tester LMAO
+#     command = input("Enter the weapon name: ")
+#     if getSkinsByWeapon(command) == None:
+#         print(f"{command} not available in collections.")
+#     else:
+#         for x in range(len(getSkinsByWeapon(command))):
+#             print(getSkinsByWeapon(command)[x])
+
 
 
 
