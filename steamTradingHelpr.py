@@ -1,6 +1,12 @@
-from termcolor import colored #Colouring Text Module. To be replaced by proper module
+from termcolor import colored #Colouring Text Module. To be replaced by proper module. Proper module as Rich i guess
 import requests
+import rich
+from rich.console import Console 
+from rich.table import Table
+import os
+os.system('color')
 #####################################
+cons = Console()
 #####################################
 globalCollectionList = ("DustII","Safehouse") #Collection Names of those colllec. which has data in proggram
 globalWeaponList = ("")
@@ -8,19 +14,19 @@ globalWearList = ("Factory New","Minimal Wear","Field-Tested","Well-Worn","Battl
 #################################
 #Collection Data. Dont Modify . Danger!!!!!!! + To be modified to tuples for memory management
 collection_dustII = (
-    ["SCAR-20","Sand Mesh",["FN","MW","FT","WW","BS"],"Consumer Grade","1"],
+    ["SCAR-20","Sand Mesh",["FN","MW","FT","WW","BS"],"Consumer Grade","1"],    
     ["Nova","Predator",["FN","MW","FT","WW","BS"],"Consumer Grade","2"],
     ["P90","Sand Spray",["FN","MW","FT","WW","BS"],"Consumer Grade","3"],
     ["MP9","Sand Dashed",["FN","MW","FT","WW","BS"],"Consumer Grade","4"],
-    ["G3SG1","Desert Strom", ["FN","MW","FT","WW","BS"],"Consumer Grade","5"],
+    ["G3SG1","Desert Storm", ["FN","MW","FT","WW","BS"],"Consumer Grade","5"],
     ["P250","Sand Dune",["FN","MW","FT","WW","BS"],"Consumer Grade","6"],
     ["Sawed-Off","Snake Camo",["FN","MW","FT","WW","BS"],"Industrial Grade","7"],
-    ["Tec-9","Vari Camo",["FN","MW","FT","WW","BS"],"Industrial Grade","8"],
+    ["Tec-9","VariCamo",["FN","MW","FT","WW","BS"],"Industrial Grade","8"],
     ["Five-SeveN","Orange Peel",["FN","MW","FT","WW","BS"],"Industrial Grade","9"],
     ["MAC-10","Palm",["FN","MW","FT","WW","BS"],"Industrial Grade","10"],
     ["AK-47","Safari Mesh",["FN","MW","FT","WW","BS"],"Industrial Grade","11"],
     ["PP-Bizon","Brass",["FN","MW","FT","WW","BS"],"Mil-Spec","12"],
-    ["M4A1-S","Vari Camo",["FN","MW","FT","WW","BS"],"Mil-Spec","13"],
+    ["M4A1-S","VariCamo",["FN","MW","FT","WW","BS"],"Mil-Spec","13"],
     ["SG 553","Damascus Steel",["FN","MW","FT","WW","BS"],"Mil-Spec","14"],
     ["P2000","Amber Fade",["FN","MW","FT","WW","BS"],"Restricted","15"],
     ["R8 Revolver","Amber Fade",["FN","MW","FT","WW","BS"],"Classified","16"]
@@ -97,54 +103,68 @@ def getSkinsByWeapon(weaponName):
     else:
         return f"{weaponName} not in database."
 
-def linkBuilder(weaponName,weaponSkinName, weaponWear):
+def linkBuilder(weaponName,weaponSkinName, weaponWear): #as fine as the 1st code
     firstHolder = "https://steamcommunity.com/market/priceoverview/?currency=1&appid=730&market_hash_name="
-    splitedWeaponName = weaponName.split()
-    splitedWeaponSkinName = weaponSkinName.split()
-    splitableWears = [globalWearList[0],globalWearList[1]]
-    if weaponWear in splitableWears:
-        tempHolder = weaponWear.split()
-    if (len(splitedWeaponName) == 1 and len(splitedWeaponSkinName)==1) and (weaponWear not in splitableWears): ##NSNSNS 1
-        fLink = f"{firstHolder}{weaponName}%20%7C%20{weaponSkinName}%20%28{weaponWear}%29"
-        return fLink
-    if (len(splitedWeaponName)!=1 and len(splitedWeaponSkinName)!= 1) and (weaponWear in splitableWears): ##SSS 2
-        fLink = f"{firstHolder}{splitedWeaponName[0]}%20{splitedWeaponName[1]}%20%7C%20{splitedWeaponSkinName[0]}%20{splitedWeaponSkinName[1]}%20%28{tempHolder[0]}%20{tempHolder[1]}%29"
-        return fLink
-    if (len(splitedWeaponName) != 1 and len(splitedWeaponSkinName) != 1) and (weaponWear not in splitableWears): #SSNS 3
-        fLink = f"{firstHolder}{splitedWeaponName[0]}%20{splitedWeaponName[1]}%20%7C%20{splitedWeaponSkinName[0]}%20{splitedWeaponSkinName[1]}%20%28{weaponWear}%29"
-        return fLink
-    if (len(splitedWeaponName) != 1 and len(splitedWeaponSkinName) == 1) and (weaponWear not in splitableWears ): #SNSNS 4
-        fLink = f"{firstHolder}{splitedWeaponName[0]}%20{splitedWeaponName[1]}%20%7C%20{weaponSkinName}%20%28{weaponWear}%29"
-        return fLink
-    if (len(splitedWeaponName) == 1 and len(splitedWeaponSkinName) == 1 ) and (weaponWear in splitableWears):#NSNSS 5
-        fLink = f"{firstHolder}{weaponName}%20%7C%20{weaponSkinName}%20%28{tempHolder[0]}%20{tempHolder[1]}%29"
-        return fLink
-    if (len(splitedWeaponName) == 1 and len(splitedWeaponSkinName) != 1) and (weaponWear in splitableWears): #NSSS 6
-        fLink = f"{firstHolder}{weaponName}%20%7C%20{splitedWeaponSkinName[0]}%20{splitedWeaponSkinName[1]}%20%28{tempHolder[0]}%20{tempHolder[1]}%29"
-        return fLink
-    if(len(splitedWeaponName) == 1 and len(splitedWeaponSkinName) != 1) and (weaponWear not in splitableWears):#NSSNS 7
-        fLink = f"{firstHolder}{weaponName}%20%7C%20{splitedWeaponSkinName[0]}%20{splitedWeaponSkinName[1]}%20%28{weaponWear}%29"
-        return fLink
-    if(len(splitedWeaponName) != 1 and len(splitedWeaponSkinName) == 1) and (weaponWear in splitableWears):
-        fLink = f"{firstHolder}{splitedWeaponName[0]}%20{splitedWeaponName[1]}%20%7C%20{weaponSkinName}%20%28{tempHolder[0]}%20{tempHolder[1]}%29"
-        return fLink
-
-
     if weaponWear not in globalWearList:
         return f"{weaponWear} or {weaponName} {weaponSkinName} is not valid."
+    else:
+        return f"{firstHolder}{weaponName}%20%7C%20{weaponSkinName}%20%28{weaponWear}%29"
+    ########Below Code was initially made to check this fucntion's functionality########
     # if weaponWear == globalWearList[0] or weaponWear == globalWearList[1]:
     #     tempHolder = weaponWear.split()
     #     fLink = f"{firstHolder}{weaponName}%20%7C%20{weaponSkinName}%20%28{tempHolder[0]}%20{tempHolder[1]}%29"
     #     return fLink
 
+def getWeaponPrice(weaponName,weaponSkinName,weaponWear):
+    dictForPrice = requests.get(linkBuilder(weaponName,weaponSkinName,weaponWear)).json()
+    # print (dictForPrice)
+    if dictForPrice['success'] == True:
+        tempPrice = dictForPrice['lowest_price']
+        # print (type(tempPrice))
+        return tempPrice
+    else:
+        return None
+
+def wearBuilder(str):
+    localWears =("FN","MW","FT","WW","BS")
+    if str not in  localWears:
+        return None
+    elif str == "FN":
+        return "Factory New"
+    elif str == "MW":
+        return "Minimal Wear"
+    elif srt == "FT":
+        return "Field-Tested"
+    elif str == "WW":
+        return "Well-Worn"
+    elif str == "BS":
+        return "Battle-Scarred"
+    return None
+        
+
 #####################################
 #####################################
+
+
 class parentWeapon: # Base Class for Holding Skins. Made for inheritance.
     def __init__(self,weName,weSName,weSWear,weSTier):
         self.weName = weName
         self.weSName = weSName
         self.weSWear = weSWear
         self.weSTier = weSTier
+
+    # def tableConstructors(self,specifiedWear,weSPrice):
+    #     self.specifiedWear = specifiedWear
+    #     self.weSPrice = weSPrice
+
+    #     ############################
+    #     print(self.weName,self.weSName,self.specifiedWear,self.weSPrice)
+    #     table = Table(title = "DustII")
+    #     table.add_row(self.weName,self.weSName,self.specifiedWear,self.weSPrice)
+
+
+
+
 class Dust_II(parentWeapon): # For D2 Collc. JUST FOR OBJECT #TBD
     collectionName = "The Dust II Collection"
 class safehouse(parentWeapon): # For SF Collc. JUST FOR OBJ #TBD
@@ -152,18 +172,31 @@ class safehouse(parentWeapon): # For SF Collc. JUST FOR OBJ #TBD
 class Train(parentWeapon):
     collectionName = "The Train Collection"
 
+
+
 def displayCollection(globalCollectionName): #Displays Collection skins by taking argument as collection name. if passed allCol then displays all available collecotion
 
     if  globalCollectionName not in globalCollectionList: #Displays Error if not in Global Collection Lists
         print (f"{globalCollectionName} not in collection")
     if globalCollectionName == "DustII" or globalCollectionName == "all" :
-        print("Dust II Collection : ")
+        table = Table(title = "DustII")
+        table.add_column("sn. ")
+        table.add_column("Weapon")
+        table.add_column("Skin name")
+        table.add_column("Wear")
+        table.add_column("Price")
         for x in range(len(collection_dustII)):
             weC_dustII = Dust_II(collection_dustII[x][0],collection_dustII[x][1],collection_dustII[x][2],collection_dustII[x][3])
-            #print (f"{x+1}. {weC_dustII.weName} | {weC_dustII.weSName}")
-            tempText = f"{weC_dustII.weName} | {weC_dustII.weSName}"
-            colorReciever = colorProvider(tempText,weC_dustII.weSTier)
-            print(f"{x+1}. {colorReciever}")
+            table.add_row(str(x+1),weC_dustII.weName,weC_dustII.weSName,"Factory New",getWeaponPrice(weC_dustII.weName,weC_dustII.weSName,"Factory New"))
+            #,.............getWeaponPrice(collection_dustII[x][0],collection_dustII[x][1])
+            #..............print (f"{x+1}. {weC_dustII.weName} | {weC_dustII.weSName}")
+            # print (f"{collection_dustII[x][0],collection_dustII[x][1],collection_dustII[x][2],collection_dustII[x][3]}")
+            # weC_dustII.tableConstructors(wearBuilder("FN"),getWeaponPrice(collection_dustII[x][0],collection_dustII[x][1],wearBuilder("FN")))
+            # table.add_row("Hello","Hi","NI","GA")
+            # tempText = f"{weC_dustII.weName} | {weC_dustII.weSName}"
+            # colorReciever = colorProvider(tempText,weC_dustII.weSTier)
+            # print(f"{x+1}. {colorReciever}")
+        cons.print(table)
         print()
 
     if globalCollectionName == "Safehouse" or globalCollectionName == "all" :
@@ -194,7 +227,11 @@ def displayCollection(globalCollectionName): #Displays Collection skins by takin
 #             print(getSkinsByWeapon(command)[x])
 
 
-print(linkBuilder("SG 553","Cyrex","Minimal Wear"))
+# print (getWeaponPrice("SG 553","Cyrex","Field-Tested"))
+# print (linkBuilder("AK-47","Asiimov","Field-Tested"))
+displayCollection("DustII")
+# print (wearBuilder("FN"))
+
 
 
 
