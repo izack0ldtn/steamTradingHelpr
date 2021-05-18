@@ -69,18 +69,18 @@ collection_train = (
 )
 #####################################
 #####################################
-def colorProvider(str,tier): #Returns coloured text using colored module. Initially made for displaycollection func. Added to getskinsbyweapon
+def getStyle(tier): #Returns coloured text using colored module. Initially made for displaycollection func. Added to getskinsbyweapon
 
     if tier == "Consumer Grade":
-        return colored(f"{str}", 'grey')
+        return "white"
     elif tier == "Industrial Grade":
-        return colored(f"{str}", 'cyan')
+        return "bright_cyan"
     elif tier == "Mil-Spec":
-        return colored(f"{str}", 'blue')
+        return "bright_blue"
     elif tier == "Restricted":
-        return colored(f"{str}", 'green')
+        return "purple"
     elif tier == "Classified":
-        return colored(f"{str}", 'magenta')
+        return "bright_magenta"
 
 
 def getSkinsByWeapon(weaponName):
@@ -187,7 +187,7 @@ def displayCollection(globalCollectionName): #Displays Collection skins by takin
         table.add_column("Price")
         for x in range(len(collection_dustII)):
             weC_dustII = Dust_II(collection_dustII[x][0],collection_dustII[x][1],collection_dustII[x][2],collection_dustII[x][3])
-            table.add_row(str(x+1),weC_dustII.weName,weC_dustII.weSName,"Factory New",getWeaponPrice(weC_dustII.weName,weC_dustII.weSName,"Factory New"))
+            table.add_row(str(x+1),weC_dustII.weName,weC_dustII.weSName,"Factory New",getWeaponPrice(weC_dustII.weName,weC_dustII.weSName,"Factory New"),style = getStyle(weC_dustII.weSTier))
             #,.............getWeaponPrice(collection_dustII[x][0],collection_dustII[x][1])
             #..............print (f"{x+1}. {weC_dustII.weName} | {weC_dustII.weSName}")
             # print (f"{collection_dustII[x][0],collection_dustII[x][1],collection_dustII[x][2],collection_dustII[x][3]}")
