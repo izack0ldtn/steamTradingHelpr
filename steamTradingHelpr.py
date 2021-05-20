@@ -105,23 +105,19 @@ def getSkinsByWeapon(weaponName):
 
 def linkBuilder(weaponName,weaponSkinName, weaponWear): #as fine as the 1st code
     firstHolder = "https://steamcommunity.com/market/priceoverview/?currency=1&appid=730&market_hash_name="
+    if wearBuilder(weaponWear) in globalWearList:
+        weaponWear = wearBuilder(weaponWear)
     if weaponWear not in globalWearList:
         return f"{weaponWear} or {weaponName} {weaponSkinName} is not valid."
     else:
         return f"{firstHolder}{weaponName}%20%7C%20{weaponSkinName}%20%28{weaponWear}%29"
-    ########Below Code was initially made to check this fucntion's functionality########
-    # if weaponWear == globalWearList[0] or weaponWear == globalWearList[1]:
-    #     tempHolder = weaponWear.split()
-    #     fLink = f"{firstHolder}{weaponName}%20%7C%20{weaponSkinName}%20%28{tempHolder[0]}%20{tempHolder[1]}%29"
-    #     return fLink
 
 def getWeaponPrice(weaponName,weaponSkinName,weaponWear):
     dictForPrice = requests.get(linkBuilder(weaponName,weaponSkinName,weaponWear)).json()
     # print (dictForPrice)
     if dictForPrice['success'] == True:
         tempPrice = dictForPrice['lowest_price']
-        # print (type(tempPrice))
-        return tempPrice
+        return float(tempPrice.strip("$"))
     else:
         return None
 
@@ -141,6 +137,33 @@ def wearBuilder(str):
         return "Battle-Scarred"
     return None
         
+def sorter(listR):
+    n =1
+    le = len(listR)
+    for x in range(le):
+        if n<le:
+            for y in range(n,le):
+                if listR[x][1] > listR[y][1]:
+                    listR[x],listR[y] = listR[y],listR[x]
+        n+= 1
+    return listR
+def tableSorter(listR,collectionName):
+    sortedList = sorter(listR)
+    if collectionName == "DustII":
+        table_dust =Table(title = collectionName)
+        table_dust.add_column("sn.")
+        table_dust.add_column("Weapon")
+        table_dust.add_column("Skin")
+        table_dust.add_column("Price")
+        for x in range(len(sortedList)):
+            for y in range(len(collection_dustII)):
+                print(sortedList[x][0],collection_dustII[y][4])
+                if sortedList[x][0] == collection_dustII[y][4]:
+                    table_dust.add_row(str(x+1),collection_dustII[y][0],collection_dustII[y][1],str(sortedList[x][1]),style= getStyle(collection_dustII[y][3]))
+    console = Console()
+    console.print(table_dust)
+
+
 
 #####################################
 #####################################
@@ -153,18 +176,6 @@ class parentWeapon: # Base Class for Holding Skins. Made for inheritance.
         self.weSWear = weSWear
         self.weSTier = weSTier
 
-    # def tableConstructors(self,specifiedWear,weSPrice):
-    #     self.specifiedWear = specifiedWear
-    #     self.weSPrice = weSPrice
-
-    #     ############################
-    #     print(self.weName,self.weSName,self.specifiedWear,self.weSPrice)
-    #     table = Table(title = "DustII")
-    #     table.add_row(self.weName,self.weSName,self.specifiedWear,self.weSPrice)
-
-
-
-
 class Dust_II(parentWeapon): # For D2 Collc. JUST FOR OBJECT #TBD
     collectionName = "The Dust II Collection"
 class safehouse(parentWeapon): # For SF Collc. JUST FOR OBJ #TBD
@@ -175,28 +186,25 @@ class Train(parentWeapon):
 
 
 def displayCollection(globalCollectionName): #Displays Collection skins by taking argument as collection name. if passed allCol then displays all available collecotion
-
+    dataHolder =[]
     if  globalCollectionName not in globalCollectionList: #Displays Error if not in Global Collection Lists
         print (f"{globalCollectionName} not in collection")
     if globalCollectionName == "DustII" or globalCollectionName == "all" :
-        table = Table(title = "DustII")
-        table.add_column("sn. ")
-        table.add_column("Weapon")
-        table.add_column("Skin name")
-        table.add_column("Wear")
-        table.add_column("Price")
+        # table = Table(title = "DustII")
+        # table.add_column("sn. ")
+        # table.add_column("Weapon")
+        # table.add_column("Skin name")
+        # table.add_column("Wear")
+        # table.add_column("Price")
         for x in range(len(collection_dustII)):
             weC_dustII = Dust_II(collection_dustII[x][0],collection_dustII[x][1],collection_dustII[x][2],collection_dustII[x][3])
-            table.add_row(str(x+1),weC_dustII.weName,weC_dustII.weSName,"Factory New",getWeaponPrice(weC_dustII.weName,weC_dustII.weSName,"Factory New"),style = getStyle(weC_dustII.weSTier))
-            #,.............getWeaponPrice(collection_dustII[x][0],collection_dustII[x][1])
-            #..............print (f"{x+1}. {weC_dustII.weName} | {weC_dustII.weSName}")
-            # print (f"{collection_dustII[x][0],collection_dustII[x][1],collection_dustII[x][2],collection_dustII[x][3]}")
-            # weC_dustII.tableConstructors(wearBuilder("FN"),getWeaponPrice(collection_dustII[x][0],collection_dustII[x][1],wearBuilder("FN")))
-            # table.add_row("Hello","Hi","NI","GA")
-            # tempText = f"{weC_dustII.weName} | {weC_dustII.weSName}"
-            # colorReciever = colorProvider(tempText,weC_dustII.weSTier)
-            # print(f"{x+1}. {colorReciever}")
-        cons.print(table)
+            dataHolder.append((collection_dustII[x][4],getWeaponPrice(weC_dustII.weName,weC_dustII.weSName,"Factory New")))
+            # table.add_row(str(x+1),weC_dustII.weName,weC_dustII.weSName,"Factory New",getWeaponPrice(weC_dustII.weName,weC_dustII.weSName,"Factory New"),style = getStyle(weC_dustII.weSTier))
+        # cons.print(table)
+        if globalCollectionName == "all":
+            pass
+        else:
+            return dataHolder
         print()
 
     if globalCollectionName == "Safehouse" or globalCollectionName == "all" :
@@ -227,11 +235,11 @@ def displayCollection(globalCollectionName): #Displays Collection skins by takin
 #             print(getSkinsByWeapon(command)[x])
 
 
-# print (getWeaponPrice("SG 553","Cyrex","Field-Tested"))
+# print (getWeaponPrice("SG 553","Cyrex","FN"))
 # print (linkBuilder("AK-47","Asiimov","Field-Tested"))
-displayCollection("DustII")
+# print(displayCollection("DustII"))
 # print (wearBuilder("FN"))
-
-
+# print(sorter([("1",0.10),("2",0.05),("3",0.14),("4",0.07)]))
+tableSorter(displayCollection("DustII"),"DustII")
 
 
