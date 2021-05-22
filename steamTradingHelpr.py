@@ -1,4 +1,4 @@
-from termcolor import colored #Colouring Text Module. To be replaced by proper module. Proper module as Rich i guess
+
 import requests
 import rich
 from tqdm import tqdm
@@ -254,11 +254,11 @@ def displayCollection(globalCollectionName): #Displays Collection skins by takin
 # print (wearBuilder("FN"))
 # print(sorter([("1",0.10),("2",0.05),("3",0.14),("4",0.07)]))
 # tableSorter(displayCollection("DustII"),"DustII","n")
+cons.rule()
+cons.print("STEAM TRADING HELPR ALPHA 0.0.1",justify = "center",style= "red")
+cons.rule()
+cons.print("Welcome to STEAM TRADING HELPR. THIS IS THE FIRST VERSION OF THE PROGRAM. WARNING! ITS UNSTABLE. SURPLUS THIS PROGRAM DOESN'T HAS THE FUCTION ITS CREATOR MENTIONED. THIS IS JUST PRE-ALPHA RELEASE. TO START UP PRESS '-h' FOR HELP AND COMMANDS.",overflow= "fold",style= "black on white")
 while True:
-    x = input("Press C to continue:")
-    if x == "c":
-        tableSorter(displayCollection("Train"),"Train","cf")
-        # tableSorter(displayCollection("DustII"),"DustII","n")
-
+    commandInput = input("Presss")
 
 
