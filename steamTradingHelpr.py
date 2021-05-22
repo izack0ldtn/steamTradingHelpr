@@ -41,13 +41,13 @@ collection_safehouse = (
     ["MP7", "Army Recon", ["FN","MW","FT","WW","BS"],"Consumer Grade","20"],
     ["Dual Berettas","Contractor", ["FN","MW","FT","WW","BS"],"Consumer Grade","21"],
     ["MP9","Orange Peel", ["FN","MW","FT","WW","BS"],"Industrial Grade","22"],
-    ["Galil AR","Vari Camo",["FN","MW","FT","WW","BS"],"Industrial Grade","23"],
-    ["G3SG1", "Vari Camo", ["FN","MW","FT","WW","BS"],"Industrial Grade","24"],
+    ["Galil AR","VariCamo",["FN","MW","FT","WW","BS"],"Industrial Grade","23"],
+    ["G3SG1", "VariCamo", ["FN","MW","FT","WW","BS"],"Industrial Grade","24"],
     ["AUG","Condemned",["FN","MW","FT","WW","BS"],"Industrial Grade","25"],
     ["USP-S","Forest Leaves",["FN","MW","FT","WW","BS"],"Industrial Grade","26"],
     ["M249","Gator Mesh",["FN","MW","FT","WW","BS"],"Industrial Grade","27"],
     ["Five-SeveN","Silver Quartz",["FN","MW","FT","WW"],"Mil-Spec","28"],
-    ["FAMAS","Tear Down",["FN","MW","FT","WW","BS"],"Mil-Spec","29"],
+    ["FAMAS","Teardown",["FN","MW","FT","WW","BS"],"Mil-Spec","29"],
     ["SSG 08","Acid Fade",["FN"],"Mil-Spec","30"],
     ["M4A1-S","Nitro",["FN","MW","FT","WW","BS"],"Restricted","31"]
 )
@@ -131,7 +131,7 @@ def wearBuilder(str):
         return "Factory New"
     elif str == "MW":
         return "Minimal Wear"
-    elif srt == "FT":
+    elif str == "FT":
         return "Field-Tested"
     elif str == "WW":
         return "Well-Worn"
@@ -198,6 +198,7 @@ def helper():
     print("Type BS for Battle-Scarred")
     cons.rule("[red]OTHER FUCNTIONS")
     print("type end to quit the program.")
+    print("type back to return back")
 #####################################
 #####################################
 
@@ -234,7 +235,6 @@ def displayCollection(globalCollectionName,wearPass): #Displays Collection skins
         print()
 
     if globalCollectionName == "Safehouse" or globalCollectionName == "all" :
-        print ("Safehouse Collection : ")
         for x in tqdm(range (len(collection_safehouse))):
             weC_safehouse = safehouse(collection_safehouse[x][0],collection_safehouse[x][1],collection_safehouse[x][2],collection_safehouse[x][3])
             dataHolder.append((collection_safehouse[x][4],getWeaponPrice(weC_safehouse.weName,weC_safehouse.weSName,wearPass)))
@@ -278,23 +278,31 @@ while True:
     commandInput = input("STEAM TRADING HELPR 0.0.1 : ")
     if commandInput == "-h"or commandInput == "-H":
         helper()
+    elif commandInput == "-v" or commandInput == "-V":
+        cons.print("[bold red]Version PRE-ALPHA 0.0.1")
     elif commandInput == "end" or commandInput == "END":
         exit()
     elif commandInput == "d2" or commandInput == "d2 cf":
         wearStore = input("Enter the wear : ")
-        if commandInput == "d2 cf":
+        if wearStore == "back" or wearBuilder(wearStore) not in globalWearList:
+            pass
+        elif commandInput == "d2 cf":
             tableSorter(displayCollection("DustII",wearBuilder(wearStore)),"DustII","cf")
         else:
             tableSorter(displayCollection("DustII",wearBuilder(wearStore)),"DustII","n")
     elif commandInput == "sf" or commandInput == "sf cf":
         wearStore = input("Enter the wear : ")
+        if wearStore == "back" or wearBuilder(wearStore) not in globalWearList:
+            pass
         if commandInput == "sf cf":
             tableSorter(displayCollection("Safehouse",wearBuilder(wearStore)),"Safehouse","cf")
         else:
             tableSorter(displayCollection("Safehouse",wearBuilder(wearStore)),"Safehouse","n")
     elif commandInput == "tr" or commandInput == "tr cf":
         wearStore = input("Enter the wear: ")
-        if commandInput == "tr cf":
+        if wearStore == "back" or wearBuilder(wearStore) not in globalWearList:
+            pass
+        elif commandInput == "tr cf":
             tableSorter(displayCollection("Train",wearBuilder(wearStore)),"Train","cf")
         else:
             tableSorter(displayCollection("Train",wearBuilder(wearStore)),"Train","n")
