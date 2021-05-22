@@ -1,14 +1,16 @@
 from termcolor import colored #Colouring Text Module. To be replaced by proper module. Proper module as Rich i guess
 import requests
 import rich
+from tqdm import tqdm
 from rich.console import Console 
 from rich.table import Table
+from functools import lru_cache
 import os
 os.system('color')
 #####################################
 cons = Console()
 #####################################
-globalCollectionList = ("DustII","Safehouse") #Collection Names of those colllec. which has data in proggram
+globalCollectionList = ("DustII","Safehouse","Train") #Collection Names of those colllec. which has data in proggram
 globalWeaponList = ("")
 globalWearList = ("Factory New","Minimal Wear","Field-Tested","Well-Worn","Battle-Scarred")
 #################################
@@ -102,7 +104,7 @@ def getSkinsByWeapon(weaponName):
         return tempAppender
     else:
         return f"{weaponName} not in database."
-
+@lru_cache(maxsize = None)
 def linkBuilder(weaponName,weaponSkinName, weaponWear): #as fine as the 1st code
     firstHolder = "https://steamcommunity.com/market/priceoverview/?currency=1&appid=730&market_hash_name="
     if wearBuilder(weaponWear) in globalWearList:
@@ -111,15 +113,15 @@ def linkBuilder(weaponName,weaponSkinName, weaponWear): #as fine as the 1st code
         return f"{weaponWear} or {weaponName} {weaponSkinName} is not valid."
     else:
         return f"{firstHolder}{weaponName}%20%7C%20{weaponSkinName}%20%28{weaponWear}%29"
-
+@lru_cache(maxsize = None)
 def getWeaponPrice(weaponName,weaponSkinName,weaponWear):
     dictForPrice = requests.get(linkBuilder(weaponName,weaponSkinName,weaponWear)).json()
     # print (dictForPrice)
     if dictForPrice['success'] == True:
-        tempPrice = dictForPrice['lowest_price']
-        return float(tempPrice.strip("$"))
+            tempPrice = dictForPrice['lowest_price']
+            return float(tempPrice.strip("$"))
     else:
-        return None
+        raise Exception ("Failed to retrive data from steam's server! Please try again!")
 
 def wearBuilder(str):
     localWears =("FN","MW","FT","WW","BS")
@@ -140,28 +142,43 @@ def wearBuilder(str):
 def sorter(listR):
     n =1
     le = len(listR)
-    for x in range(le):
+    cons.print("Sorting Lists .....",style ="red",justify = "center")
+    for x in tqdm(range(le)):
         if n<le:
             for y in range(n,le):
                 if listR[x][1] > listR[y][1]:
                     listR[x],listR[y] = listR[y],listR[x]
         n+= 1
     return listR
-def tableSorter(listR,collectionName):
-    sortedList = sorter(listR)
+
+def tableSorter(listR,collectionName,sortingForm):
+    if sortingForm == "cf":
+        sortedList = sorter(listR)
+    elif sortingForm == "n":
+        sortedList = listR
+    else:
+        raise Exception(f"{sortingForm} is not sorting order.")
+        
     if collectionName == "DustII":
-        table_dust =Table(title = collectionName)
-        table_dust.add_column("sn.")
-        table_dust.add_column("Weapon")
-        table_dust.add_column("Skin")
-        table_dust.add_column("Price")
-        for x in range(len(sortedList)):
-            for y in range(len(collection_dustII)):
-                print(sortedList[x][0],collection_dustII[y][4])
-                if sortedList[x][0] == collection_dustII[y][4]:
-                    table_dust.add_row(str(x+1),collection_dustII[y][0],collection_dustII[y][1],str(sortedList[x][1]),style= getStyle(collection_dustII[y][3]))
+        localCollectionList = collection_dustII
+    elif collectionName == "Train":
+        localCollectionList = collection_train
+    elif collectionName == "Safehouse":
+        localCollectionList = collection_safehouse
+    else:
+        raise Exception("Error: Collection Name is not available.")
+    table_dust =Table(title = collectionName)
+    table_dust.add_column("sn.")
+    table_dust.add_column("Weapon")
+    table_dust.add_column("Skin")
+    table_dust.add_column("Price",justify = "right")
+    for x in range(len(sortedList)):
+        for y in range(len(localCollectionList)):
+            # print(sortedList[x][0],collection_dustII[y][4])
+            if sortedList[x][0] == localCollectionList[y][4]:
+                table_dust.add_row(str(x+1),localCollectionList[y][0],localCollectionList[y][1],str(sortedList[x][1]),style= getStyle(localCollectionList[y][3]))
     console = Console()
-    console.print(table_dust)
+    console.print(table_dust,justify="center")
 
 
 
@@ -189,18 +206,11 @@ def displayCollection(globalCollectionName): #Displays Collection skins by takin
     dataHolder =[]
     if  globalCollectionName not in globalCollectionList: #Displays Error if not in Global Collection Lists
         print (f"{globalCollectionName} not in collection")
+    cons.print("Fecthing Data from Steam's Server...",style ="red",justify="center")
     if globalCollectionName == "DustII" or globalCollectionName == "all" :
-        # table = Table(title = "DustII")
-        # table.add_column("sn. ")
-        # table.add_column("Weapon")
-        # table.add_column("Skin name")
-        # table.add_column("Wear")
-        # table.add_column("Price")
-        for x in range(len(collection_dustII)):
+        for x in tqdm(range(len(collection_dustII))):
             weC_dustII = Dust_II(collection_dustII[x][0],collection_dustII[x][1],collection_dustII[x][2],collection_dustII[x][3])
             dataHolder.append((collection_dustII[x][4],getWeaponPrice(weC_dustII.weName,weC_dustII.weSName,"Factory New")))
-            # table.add_row(str(x+1),weC_dustII.weName,weC_dustII.weSName,"Factory New",getWeaponPrice(weC_dustII.weName,weC_dustII.weSName,"Factory New"),style = getStyle(weC_dustII.weSTier))
-        # cons.print(table)
         if globalCollectionName == "all":
             pass
         else:
@@ -209,22 +219,25 @@ def displayCollection(globalCollectionName): #Displays Collection skins by takin
 
     if globalCollectionName == "Safehouse" or globalCollectionName == "all" :
         print ("Safehouse Collection : ")
-        for x in range (len(collection_safehouse)):
+        for x in tqdm(range (len(collection_safehouse))):
             weC_safehouse = safehouse(collection_safehouse[x][0],collection_safehouse[x][1],collection_safehouse[x][2],collection_safehouse[x][3])
-            tempText = f"{weC_safehouse.weName} | {weC_safehouse.weSName}"
-            colorReciever = colorProvider(tempText,weC_safehouse.weSTier)
-            print(f"{x+1}. {colorReciever}")
+            dataHolder.append((collection_safehouse[x][4],getWeaponPrice(weC_safehouse.weName,weC_safehouse.weSName,"Factory New")))
+        if globalCollectionName == "all":
+            pass
+        else:
+            return dataHolder
         print()
     if globalCollectionName == "Train" or globalCollectionName == "all" :
-        print ("Train Collection : ")
-        for x in range (len(collection_train)):
+        for x in tqdm(range (len(collection_train))):
             weC_train = Train(collection_train[x][0],collection_train[x][1],collection_train[x][2],collection_train[x][3])
-            tempText = f"{weC_train.weName} | {weC_train.weSName}"
-            colorReciever = colorProvider(tempText,weC_train.weSTier)
-            print(f"{x+1}. {colorReciever}")
+            dataHolder.append((collection_train[x][4],getWeaponPrice(weC_train.weName,weC_train.weSName,"Factory New")))
+        if globalCollectionName == "all":
+            pass
+        else:
+            return dataHolder
         print()
-    if globalCollectionName == "": #TODO
-        pass
+    if globalCollectionName == "all": #TODO
+        return dataHolder
 
 # while True: # Command line tester LMAO
 #     command = input("Enter the weapon name: ")
@@ -240,6 +253,12 @@ def displayCollection(globalCollectionName): #Displays Collection skins by takin
 # print(displayCollection("DustII"))
 # print (wearBuilder("FN"))
 # print(sorter([("1",0.10),("2",0.05),("3",0.14),("4",0.07)]))
-tableSorter(displayCollection("DustII"),"DustII")
+# tableSorter(displayCollection("DustII"),"DustII","n")
+while True:
+    x = input("Press C to continue:")
+    if x == "c":
+        tableSorter(displayCollection("Train"),"Train","cf")
+        # tableSorter(displayCollection("DustII"),"DustII","n")
+
 
 
