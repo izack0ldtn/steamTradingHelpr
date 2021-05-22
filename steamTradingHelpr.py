@@ -1,4 +1,4 @@
-
+from sys import exit
 import requests
 import rich
 from tqdm import tqdm
@@ -181,7 +181,23 @@ def tableSorter(listR,collectionName,sortingForm):
     console.print(table_dust,justify="center")
 
 
-
+def helper():
+    cons.rule("[green]FOR WEAPON COLLECTION")
+    print("type d2 for dustII collection")
+    print("type sh for Safehouse collection")
+    print("type tr for Train collection")
+    print(f"Available collecetion : {globalCollectionList}")
+    cons.rule("[blue]FOR SORTING ORDER")
+    print("type n for sorting accourding to tier")
+    print("type cf for the cheapest first sorting")
+    cons.rule("[yellow]FOR WEAPON WEARS")
+    print("Type FN for Factory New")
+    print("Type MW for Minimal Wear")
+    print("Type FT for Field-Tested")
+    print("Type WW for Well-Worn")
+    print("Type BS for Battle-Scarred")
+    cons.rule("[red]OTHER FUCNTIONS")
+    print("type end to quit the program.")
 #####################################
 #####################################
 
@@ -202,7 +218,7 @@ class Train(parentWeapon):
 
 
 
-def displayCollection(globalCollectionName): #Displays Collection skins by taking argument as collection name. if passed allCol then displays all available collecotion
+def displayCollection(globalCollectionName,wearPass): #Displays Collection skins by taking argument as collection name. if passed allCol then displays all available collecotion
     dataHolder =[]
     if  globalCollectionName not in globalCollectionList: #Displays Error if not in Global Collection Lists
         print (f"{globalCollectionName} not in collection")
@@ -210,7 +226,7 @@ def displayCollection(globalCollectionName): #Displays Collection skins by takin
     if globalCollectionName == "DustII" or globalCollectionName == "all" :
         for x in tqdm(range(len(collection_dustII))):
             weC_dustII = Dust_II(collection_dustII[x][0],collection_dustII[x][1],collection_dustII[x][2],collection_dustII[x][3])
-            dataHolder.append((collection_dustII[x][4],getWeaponPrice(weC_dustII.weName,weC_dustII.weSName,"Factory New")))
+            dataHolder.append((collection_dustII[x][4],getWeaponPrice(weC_dustII.weName,weC_dustII.weSName,wearPass)))
         if globalCollectionName == "all":
             pass
         else:
@@ -221,7 +237,7 @@ def displayCollection(globalCollectionName): #Displays Collection skins by takin
         print ("Safehouse Collection : ")
         for x in tqdm(range (len(collection_safehouse))):
             weC_safehouse = safehouse(collection_safehouse[x][0],collection_safehouse[x][1],collection_safehouse[x][2],collection_safehouse[x][3])
-            dataHolder.append((collection_safehouse[x][4],getWeaponPrice(weC_safehouse.weName,weC_safehouse.weSName,"Factory New")))
+            dataHolder.append((collection_safehouse[x][4],getWeaponPrice(weC_safehouse.weName,weC_safehouse.weSName,wearPass)))
         if globalCollectionName == "all":
             pass
         else:
@@ -230,7 +246,7 @@ def displayCollection(globalCollectionName): #Displays Collection skins by takin
     if globalCollectionName == "Train" or globalCollectionName == "all" :
         for x in tqdm(range (len(collection_train))):
             weC_train = Train(collection_train[x][0],collection_train[x][1],collection_train[x][2],collection_train[x][3])
-            dataHolder.append((collection_train[x][4],getWeaponPrice(weC_train.weName,weC_train.weSName,"Factory New")))
+            dataHolder.append((collection_train[x][4],getWeaponPrice(weC_train.weName,weC_train.weSName, wearPass)))
         if globalCollectionName == "all":
             pass
         else:
@@ -255,10 +271,32 @@ def displayCollection(globalCollectionName): #Displays Collection skins by takin
 # print(sorter([("1",0.10),("2",0.05),("3",0.14),("4",0.07)]))
 # tableSorter(displayCollection("DustII"),"DustII","n")
 cons.rule()
-cons.print("STEAM TRADING HELPR ALPHA 0.0.1",justify = "center",style= "red")
+cons.print("STEAM TRADING HELPR ALPHA 0.0.1",justify = "center",style= "black on white")
 cons.rule()
-cons.print("Welcome to STEAM TRADING HELPR. THIS IS THE FIRST VERSION OF THE PROGRAM. WARNING! ITS UNSTABLE. SURPLUS THIS PROGRAM DOESN'T HAS THE FUCTION ITS CREATOR MENTIONED. THIS IS JUST PRE-ALPHA RELEASE. TO START UP PRESS '-h' FOR HELP AND COMMANDS.",overflow= "fold",style= "black on white")
+cons.print("Welcome to STEAM TRADING HELPR. THIS IS THE FIRST VERSION OF THE PROGRAM. WARNING! ITS UNSTABLE. SURPLUS THIS PROGRAM DOESN'T HAVE THE FUCTION ITS CREATOR MENTIONED. THIS IS JUST PRE-ALPHA RELEASE. TO START UP PRESS '-h' FOR HELP AND COMMANDS.",overflow= "fold",style= "bold red")
 while True:
-    commandInput = input("Presss")
-
-
+    commandInput = input("STEAM TRADING HELPR 0.0.1 : ")
+    if commandInput == "-h"or commandInput == "-H":
+        helper()
+    elif commandInput == "end" or commandInput == "END":
+        exit()
+    elif commandInput == "d2" or commandInput == "d2 cf":
+        wearStore = input("Enter the wear : ")
+        if commandInput == "d2 cf":
+            tableSorter(displayCollection("DustII",wearBuilder(wearStore)),"DustII","cf")
+        else:
+            tableSorter(displayCollection("DustII",wearBuilder(wearStore)),"DustII","n")
+    elif commandInput == "sf" or commandInput == "sf cf":
+        wearStore = input("Enter the wear : ")
+        if commandInput == "sf cf":
+            tableSorter(displayCollection("Safehouse",wearBuilder(wearStore)),"Safehouse","cf")
+        else:
+            tableSorter(displayCollection("Safehouse",wearBuilder(wearStore)),"Safehouse","n")
+    elif commandInput == "tr" or commandInput == "tr cf":
+        wearStore = input("Enter the wear: ")
+        if commandInput == "tr cf":
+            tableSorter(displayCollection("Train",wearBuilder(wearStore)),"Train","cf")
+        else:
+            tableSorter(displayCollection("Train",wearBuilder(wearStore)),"Train","n")
+    else:
+        cons.print("[bold red] Keyword error. please write in correct form.")
