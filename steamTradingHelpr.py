@@ -255,21 +255,6 @@ def displayCollection(globalCollectionName,wearPass): #Displays Collection skins
     if globalCollectionName == "all": #TODO
         return dataHolder
 
-# while True: # Command line tester LMAO
-#     command = input("Enter the weapon name: ")
-#     if getSkinsByWeapon(command) == None:
-#         print(f"{command} not available in collections.")
-#     else:
-#         for x in range(len(getSkinsByWeapon(command))):
-#             print(getSkinsByWeapon(command)[x])
-
-
-# print (getWeaponPrice("SG 553","Cyrex","FN"))
-# print (linkBuilder("AK-47","Asiimov","Field-Tested"))
-# print(displayCollection("DustII"))
-# print (wearBuilder("FN"))
-# print(sorter([("1",0.10),("2",0.05),("3",0.14),("4",0.07)]))
-# tableSorter(displayCollection("DustII"),"DustII","n")
 cons.rule()
 cons.print("STEAM TRADING HELPR ALPHA 0.0.1",justify = "center",style= "black on white")
 cons.rule()
