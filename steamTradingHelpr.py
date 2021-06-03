@@ -71,6 +71,20 @@ collection_train = (
     ["Tec-9","Red Quartz",["FN","MW","FT","WW","BS"],"Restricted","46"]
 )
 #####################################
+
+collection = {} #Empty Dictionary to hold data # is_my_new_database #new_swag!
+
+def databaseFeeder(link):
+    collection.update({f"{scrapper.keyHandler(link)}":f"{scrapper.collectionDatabaseCreator(link)}"})
+    
+
+sine = ("https://csgostash.com/collection/The+Ancient+Collection","https://csgostash.com/collection/The+Chop+Shop+Collection","https://csgostash.com/collection/The+Assault+Collection")
+for x in sine:
+    databaseFeeder(x)
+for lag in collection:
+    print(f"{lag} : {collection[lag]}")
+    print("-------------------------")
+
 #####################################
 def getStyle(tier): #Returns coloured text using colored module. Initially made for displaycollection func. Added to getskinsbyweapon
 
@@ -294,6 +308,6 @@ cons.print("Welcome to STEAM TRADING HELPR. THIS IS THE FIRST VERSION OF THE PRO
 #             tableSorter(displayCollection("Train",wearBuilder(wearStore)),"Train","n")
 #     else:
 #         cons.print("[bold red] Keyword error. please write in correct form.")
-collectionDustII = scrapper.collectionDatabaseCreator("https://csgostash.com/collection/The+Dust+2+Collection")
-for x in collectionDustII:
-    print(x)
+# collectionDustII = scrapper.collectionDatabaseCreator("https://csgostash.com/collection/The+Dust+2+Collection")
+# for x in collectionDustII:
+#     print(x)

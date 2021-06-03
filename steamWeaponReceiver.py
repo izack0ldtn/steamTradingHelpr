@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from functools import lru_cache
 
-FinalLister = []
+
 def Handler(ambo):
 	if ambo == "No Recent Price" or ambo == "Not Possible":
 		return"N/A"
@@ -38,8 +38,22 @@ def tierHandler(tier):
 	else:
 		return "N/A"
 
+
+def keyHandler(link):
+	htmlFile = requests.get(link).text
+	ransoup = BeautifulSoup(htmlFile,'lxml')
+	scrapper = ransoup.find('div',class_ = "inline-middle collapsed-top-margin")
+	text = scrapper.h1.text
+	textList = text.split()
+	for x in range(len(textList)):
+		textList[x] = textList[x].lower()
+	text = "_".join(textList)
+	# print(text)
+	return text
+
 @lru_cache(maxsize = None)
 def collectionDatabaseCreator(link):
+	FinalLister = []
 	lamo = requests.get(link).text
 	soup = BeautifulSoup(lamo,'lxml')
 	for grd in soup.find_all('div',class_ ="well result-box nomargin"): ## Gets every division having class well result-box....
