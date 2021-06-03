@@ -2,7 +2,6 @@ import requests
 from bs4 import BeautifulSoup
 from functools import lru_cache
 
-print("Please Ignore all the ('NoneType' object has no attribute 'find_all') error! Dev dont want to touch the working code!")
 FinalLister = []
 def Handler(ambo):
 	if ambo == "No Recent Price" or ambo == "Not Possible":
@@ -24,6 +23,20 @@ def priceGet(linkVar):
 			tempList.append(Handler(lmao[1].text))
 	return tempList
 
+def tierHandler(tier):
+	nlist = tier.split()
+	if nlist[0] == "Consumer":
+		return "Consumer Grade"
+	elif nlist[0] == "Industrial":
+		return "Industrial Grade"
+	elif nlist[0] == "Mil-Spec":
+		return "Mil-Spec"
+	elif nlist[0] == "Restricted":
+		return "Restricted"
+	elif nlist[0] == "Classified":
+		return "Classified"
+	else:
+		return "N/A"
 
 @lru_cache(maxsize = None)
 def collectionDatabaseCreator(link):
@@ -41,7 +54,7 @@ def collectionDatabaseCreator(link):
 			tier = grd.find('a',class_= "nounderline")		# getting tier class and stuff
 			finalTier = tier.div.p.text 
 			strippedFinalTier = finalTier.strip()			# Stripped \n from those tiers
-			tempoText.append(strippedFinalTier)
+			tempoText.append(tierHandler(strippedFinalTier))
 
 			priceLink = grd.find_all('a',href=True)
 			priceLink = priceLink[3].get('href')
@@ -54,10 +67,5 @@ def collectionDatabaseCreator(link):
 		
 		except Exception as exc: #EZPZ
 			pass
-			print(exc)
+			
 	return FinalLister
-command = input("Enter Link : ")
-for x in collectionDatabaseCreator(command):
-	print(x)
-	print()
-print(len(collectionDatabaseCreator(command)))
