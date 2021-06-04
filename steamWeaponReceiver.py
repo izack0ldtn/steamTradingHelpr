@@ -39,12 +39,17 @@ def tierHandler(tier):
 		return "N/A"
 
 
-def keyHandler(link):
-	htmlFile = requests.get(link).text
-	ransoup = BeautifulSoup(htmlFile,'lxml')
-	scrapper = ransoup.find('div',class_ = "inline-middle collapsed-top-margin")
-	text = scrapper.h1.text
-	textList = text.split()
+def keyHandler(link = None,fText = None):
+	if link != None:
+		htmlFile = requests.get(link).text
+		ransoup = BeautifulSoup(htmlFile,'lxml')
+		scrapper = ransoup.find('div',class_ = "inline-middle collapsed-top-margin")
+		text = scrapper.h1.text
+		textList = text.split()
+	elif fText != None:
+		textList = fText.split()
+	elif link == None and fText == None:
+		raise Exception("Function requires at least a valid argument!")
 	for x in range(len(textList)):
 		textList[x] = textList[x].lower()
 	text = "_".join(textList)
