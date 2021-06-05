@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from functools import lru_cache
 
 
-def Handler(ambo):
+def priceHandler(ambo):
 	if ambo == "No Recent Price" or ambo == "Not Possible":
 		return"N/A"
 	else:
@@ -20,7 +20,7 @@ def priceGet(linkVar):
 	for x in priceStore:
 		lmao = x.find_all('span')
 		if len(lmao) == 2:
-			tempList.append(Handler(lmao[1].text))
+			tempList.append(priceHandler(lmao[1].text))
 	return tempList
 
 def tierHandler(tier):
@@ -35,6 +35,10 @@ def tierHandler(tier):
 		return "Restricted"
 	elif nlist[0] == "Classified":
 		return "Classified"
+	elif nlist[0] == "Covert":
+		return "Covert"
+	elif nlist[0] == "Contraband":
+		return "Contraband"
 	else:
 		return "N/A"
 
