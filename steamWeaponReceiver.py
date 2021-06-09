@@ -9,15 +9,9 @@ def priceHandler(ambo):
 	else:
 		return ambo
 
-def priceGet(linkVar):
+def priceListMaker(priceList):
 	tempList = []
-	lamodom = requests.get(linkVar).text
-	storageUnit = BeautifulSoup(lamodom,'lxml')
-	priceStore = storageUnit.find('div',id="prices")
-	priceStore = priceStore.find_all('div',class_= "btn-group-sm btn-group-justified")
-
-	# print(priceStore)
-	for x in priceStore:
+	for x in priceList:
 		lmao = x.find_all('span')
 		if len(lmao) == 2:
 			tempList.append(priceHandler(lmao[1].text))
@@ -47,48 +41,77 @@ def keyHandler(link = None,fText = None):
 	if link != None:
 		htmlFile = requests.get(link).text
 		ransoup = BeautifulSoup(htmlFile,'lxml')
+
 		scrapper = ransoup.find('div',class_ = "inline-middle collapsed-top-margin")
 		text = scrapper.h1.text
+
 		textList = text.split()
+
 	elif fText != None:
 		textList = fText.split()
+
 	elif link == None and fText == None:
 		raise Exception("Function requires at least a valid argument!")
+
 	for x in range(len(textList)):
 		textList[x] = textList[x].lower()
 	text = "_".join(textList)
 	# print(text)
 	return text
 
-@lru_cache(maxsize = None)
+def Collection_weapon_link_scrapper(urls):  #Passed a weapon skin link, Returns a list with its detail i.e name price rarity
+
+	#Creating List to store weapon details and html scrapper
+	weapon_skin_data = []
+	print(f"Requesting : {urls}") #Debugger
+	htmlFile = requests.get(urls).text
+	soup = BeautifulSoup(htmlFile,'lxml')
+	print(f"Got HTML : {urls}") #Debugger
+
+	#Append Weapon Name and Skin Name of the given weapon URL
+	weapon_name = soup.find('div',class_="well result-box nomargin")
+	weapon_name = weapon_name.h2.find_all('a',href=True)
+	for x in weapon_name:
+		weapon_skin_data.append(x.text)
+
+	#Appends skin rarity to weapon list
+	weapon_rarity = soup.find('p',class_="nomargin").text
+	weapon_skin_data.append(tierHandler(weapon_rarity.strip()))
+
+	#Appends pricelist of the skin to weapon list
+	priceStore = soup.find('div',id="prices")
+	priceStore = priceStore.find_all('div',class_= "btn-group-sm btn-group-justified")
+	weapon_skin_data.append(priceListMaker(priceStore))
+
+	return weapon_skin_data
+
+
+@lru_cache(maxsize = 15)
 def collectionDatabaseCreator(link):
-	FinalLister = []
+	local_collection_weapon_links = [] #Lists of weapon skin link in the given collection
+	returning_collection_data_list = [] #Returns the list with data in the collection
 	lamo = requests.get(link).text
 	soup = BeautifulSoup(lamo,'lxml')
-	for grd in soup.find_all('div',class_ ="well result-box nomargin"): ## Gets every division having class well result-box....
 
-		tempoText = [] 										# For the concatination of weapon and skin name
-		try: 												# to prevent error caused by souvenier packages on the front page of collection
-			name = grd.h3 									# gets h3 tag of grd (grd = each single division with class well result-box.... )
-			fina = name.find_all('a') 						# Gets the name of weapon and skins
-			for lol in fina: 								# gets weapon and skin name and append it to tempoText
-				tempoText.append(lol.text)
+	# print(soup.find_all('div',class_="well result-box nomargin"))
 
-			tier = grd.find('a',class_= "nounderline")		# getting tier class and stuff
-			finalTier = tier.div.p.text 
-			strippedFinalTier = finalTier.strip()			# Stripped \n from those tiers
-			tempoText.append(tierHandler(strippedFinalTier))
-
+	for grd in soup.find_all('div',class_ ="well result-box nomargin"): ## Gets every division having class well result-box....			
+		try:						
 			priceLink = grd.find_all('a',href=True)
 			priceLink = priceLink[3].get('href')
-			priceList = priceGet(priceLink)
-			tempoText.append(priceList)
-
-			if tempoText[0] != "'NoneType' object has no attribute 'find_all'" or tempoText[0] != None: # Checks for any exception raised by try get 
-				FinalLister.append(tempoText) 			# Pusing weapon , skin name into the list
-
-		
-		except Exception as exc: #EZPZ
+			local_collection_weapon_links.append(priceLink)
+		except Exception as e:
 			pass
-			
-	return FinalLister
+
+	# Concurrently appends data to local_ smth 
+	import concurrent.futures
+	with concurrent.futures.ThreadPoolExecutor() as executor:
+		var_of_concurrents = executor.map(Collection_weapon_link_scrapper,local_collection_weapon_links)
+	for x in var_of_concurrents:
+		returning_collection_data_list.append(x)
+
+	return returning_collection_data_list
+
+
+
+
