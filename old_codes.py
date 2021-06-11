@@ -53,3 +53,31 @@ collection_train = (
     ["Desert Eagle","Urban Rubble",["FN","MW","FT","WW","BS"],"Mil-Spec","45"],
     ["Tec-9","Red Quartz",["FN","MW","FT","WW","BS"],"Restricted","46"]
 )
+
+
+
+
+def jsonStorer():
+    MainWebLinkScrapper()
+    with open('links.json','w') as linkfile:
+        linkfile.write(json.dumps(csgostash_link_database))
+
+
+def LinkStorageHandler():
+    if os.path.isfile('links.json'):
+        with open('links.json','r') as linkFile:
+            try:
+                tempMainLinkDict = json.loads(linkFile.read())
+            except Exception as e:
+                print(e)
+                print ("No Proper JSON file")
+                jsonStorer()
+                tempMainLinkDict = json.loads(linkFile.read())
+            if len(tempMainLinkDict) != 70:
+                print("JSON file has been modified. Rewriting links.json")
+                jsonStorer()
+            else:
+                csgostash_link_database = tempMainLinkDict
+    else:
+        MainWebLinkScrapper()
+        jsonStorer()

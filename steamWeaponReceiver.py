@@ -39,16 +39,21 @@ def tierHandler(tier):
 
 def keyHandler(link = None,fText = None):
 	if link != None:
-		htmlFile = requests.get(link).text
-		ransoup = BeautifulSoup(htmlFile,'lxml')
+		try:
+			htmlFile = requests.get(link).text
+			ransoup = BeautifulSoup(htmlFile,'lxml')
 
-		scrapper = ransoup.find('div',class_ = "inline-middle collapsed-top-margin")
-		text = scrapper.h1.text
+			scrapper = ransoup.find('div',class_ = "inline-middle collapsed-top-margin")
+			text = scrapper.h1.text
 
-		textList = text.split()
+			textList = text.split()
+		except Exception as e:
+			print (e)
 
 	elif fText != None:
 		textList = fText.split()
+		if textList[0].lower() != "the":
+			textList = ["The"] + textList
 
 	elif link == None and fText == None:
 		raise Exception("Function requires at least a valid argument!")
@@ -87,7 +92,7 @@ def Collection_weapon_link_scrapper(urls):  #Passed a weapon skin link, Returns 
 
 
 @lru_cache(maxsize = 15)
-def collectionDatabaseCreator(link):
+def collectionDatabaseCreator(link): # Passed a Collection link, returns a list with its weapons' data
 	local_collection_weapon_links = [] #Lists of weapon skin link in the given collection
 	returning_collection_data_list = [] #Returns the list with data in the collection
 	lamo = requests.get(link).text
