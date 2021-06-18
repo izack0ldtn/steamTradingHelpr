@@ -78,12 +78,12 @@ def databaseFeeder(link):
     collection.update({f"{scrapper.keyHandler(link)}":f"{scrapper.collectionDatabaseCreator(link)}"})
     
 
-sine = ("https://csgostash.com/collection/The+Ancient+Collection","https://csgostash.com/collection/The+Chop+Shop+Collection","https://csgostash.com/collection/The+Assault+Collection")
-for x in sine:
-    databaseFeeder(x)
-for lag in collection:
-    print(f"{lag} : {collection[lag]}")
-    print("-------------------------")
+# sine = ("https://csgostash.com/collection/The+Ancient+Collection","https://csgostash.com/collection/The+Chop+Shop+Collection","https://csgostash.com/collection/The+Assault+Collection")
+# for x in sine:
+#     databaseFeeder(x)
+# for lag in collection:
+#     print(f"{lag} : {collection[lag]}")
+#     print("-------------------------")
 
 #####################################
 def getStyle(tier): #Returns coloured text using colored module. Initially made for displaycollection func. Added to getskinsbyweapon
@@ -274,40 +274,40 @@ cons.rule()
 cons.print("STEAM TRADING HELPR ALPHA 0.0.1",justify = "center",style= "black on white")
 cons.rule()
 cons.print("Welcome to STEAM TRADING HELPR. THIS IS THE FIRST VERSION OF THE PROGRAM. WARNING! ITS UNSTABLE. SURPLUS THIS PROGRAM DOESN'T HAVE THE FUCTION ITS CREATOR MENTIONED. THIS IS JUST PRE-ALPHA RELEASE. TO START UP PRESS '-h' FOR HELP AND COMMANDS.",overflow= "fold",style= "bold red")
-# while True:
-#     commandInput = input("STEAM TRADING HELPR 0.0.1 : ")
-#     if commandInput == "-h"or commandInput == "-H":
-#         helper()
-#     elif commandInput == "-v" or commandInput == "-V":
-#         cons.print("[bold red]Version PRE-ALPHA 0.0.1")
-#     elif commandInput == "end" or commandInput == "END":
-#         exit()
-#     elif commandInput == "d2" or commandInput == "d2 cf":
-#         wearStore = input("Enter the wear : ")
-#         if wearStore == "back" or wearBuilder(wearStore) not in globalWearList:
-#             pass
-#         elif commandInput == "d2 cf":
-#             tableSorter(displayCollection("DustII",wearBuilder(wearStore)),"DustII","cf")
-#         else:
-#             tableSorter(displayCollection("DustII",wearBuilder(wearStore)),"DustII","n")
-#     elif commandInput == "sf" or commandInput == "sf cf":
-#         wearStore = input("Enter the wear : ")
-#         if wearStore == "back" or wearBuilder(wearStore) not in globalWearList:
-#             pass
-#         if commandInput == "sf cf":
-#             tableSorter(displayCollection("Safehouse",wearBuilder(wearStore)),"Safehouse","cf")
-#         else:
-#             tableSorter(displayCollection("Safehouse",wearBuilder(wearStore)),"Safehouse","n")
-#     elif commandInput == "tr" or commandInput == "tr cf":
-#         wearStore = input("Enter the wear: ")
-#         if wearStore == "back" or wearBuilder(wearStore) not in globalWearList:
-#             pass
-#         elif commandInput == "tr cf":
-#             tableSorter(displayCollection("Train",wearBuilder(wearStore)),"Train","cf")
-#         else:
-#             tableSorter(displayCollection("Train",wearBuilder(wearStore)),"Train","n")
-#     else:
-#         cons.print("[bold red] Keyword error. please write in correct form.")
+while True:
+    commandInput = input("STEAM TRADING HELPR 0.0.1 : ")
+    if commandInput == "-h"or commandInput == "-H":
+        helper()
+    elif commandInput == "-v" or commandInput == "-V":
+        cons.print("[bold red]Version PRE-ALPHA 0.0.1")
+    elif commandInput == "end" or commandInput == "END":
+        exit()
+    elif commandInput == "d2" or commandInput == "d2 cf":
+        wearStore = input("Enter the wear : ")
+        if wearStore == "back" or wearBuilder(wearStore) not in globalWearList:
+            pass
+        elif commandInput == "d2 cf":
+            tableSorter(displayCollection("DustII",wearBuilder(wearStore)),"DustII","cf")
+        else:
+            tableSorter(displayCollection("DustII",wearBuilder(wearStore)),"DustII","n")
+    elif commandInput == "sf" or commandInput == "sf cf":
+        wearStore = input("Enter the wear : ")
+        if wearStore == "back" or wearBuilder(wearStore) not in globalWearList:
+            pass
+        if commandInput == "sf cf":
+            tableSorter(displayCollection("Safehouse",wearBuilder(wearStore)),"Safehouse","cf")
+        else:
+            tableSorter(displayCollection("Safehouse",wearBuilder(wearStore)),"Safehouse","n")
+    elif commandInput == "tr" or commandInput == "tr cf":
+        wearStore = input("Enter the wear: ")
+        if wearStore == "back" or wearBuilder(wearStore) not in globalWearList:
+            pass
+        elif commandInput == "tr cf":
+            tableSorter(displayCollection("Train",wearBuilder(wearStore)),"Train","cf")
+        else:
+            tableSorter(displayCollection("Train",wearBuilder(wearStore)),"Train","n")
+    else:
+        cons.print("[bold red] Keyword error. please write in correct form.")
 # collectionDustII = scrapper.collectionDatabaseCreator("https://csgostash.com/collection/The+Dust+2+Collection")
 # for x in collectionDustII:
 #     print(x)

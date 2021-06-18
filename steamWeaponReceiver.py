@@ -68,10 +68,10 @@ def Collection_weapon_link_scrapper(urls):  #Passed a weapon skin link, Returns 
 
 	#Creating List to store weapon details and html scrapper
 	weapon_skin_data = []
-	print(f"Requesting : {urls}") #Debugger
+	# print(f"Requesting : {urls}") #Debugger
 	htmlFile = requests.get(urls).text
 	soup = BeautifulSoup(htmlFile,'lxml')
-	print(f"Got HTML : {urls}") #Debugger
+	# print(f"Got HTML : {urls}") #Debugger
 
 	#Append Weapon Name and Skin Name of the given weapon URL
 	weapon_name = soup.find('div',class_="well result-box nomargin")
@@ -131,7 +131,6 @@ def MainWebLinkScrapper():  ## Updates database with link
 
 	for z in linkForCollection:
 		if z.get('href') != "#":
-			# print(f"{z.text} - {z.get('href')}")
 			csgostash_link_database.update({f"{keyHandler(None,z.text)}" : z.get('href')})
 
 	#Scrapping Cases link! (below)
@@ -154,7 +153,7 @@ collection_database = {}
 
 
 def Collection_Database_Feeder(link):  ## Updates / Pushes collection_cases_collection_database with collection and cases with collection link.
-	t1 = time.time() # Time Debugger
+	# t1 = time.time() # Time Debugger
 	if len(link)== 0:
 		print("No Link Passed!")
 		return None
@@ -163,8 +162,8 @@ def Collection_Database_Feeder(link):  ## Updates / Pushes collection_cases_coll
 			collection_database.update({f"{keyHandler(eachLink)}":collectionDatabaseCreator(eachLink)})
 		else:
 			pass
-	t2 = time.time()
-	print(f"Feeding the collection/cases database : {int(t2-t1)} sec(s)") # Time Debugger
+	# t2 = time.time()
+	# print(f"Feeding the collection/cases database : {int(t2-t1)} sec(s)") # Time Debugger
 
 
 
