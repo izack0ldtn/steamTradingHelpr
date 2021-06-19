@@ -65,15 +65,65 @@ def MainMenu():
 
 def continueMenu():
 	statement = "Select to continue: "
-	continue_menu_list = ["Specified Collection","All Collection","Go Back"]
+	continue_menu_list = ["All Collection","Specified Collection","Drop Pool Collection","Go Back"]
 	continueMenuobj = Menu_RadioButton(continue_menu_list,statement)
 	returnValue = continueMenuobj.main()
-	if returnValue == continue_menu_list[0]:
+	if returnValue == continue_menu_list[1]:
 		specifiedCollectionMenu()
-	elif returnValue == continue_menu_list[1]:
+	elif returnValue == continue_menu_list[0]:
 		allCollectionMenu()
 	elif returnValue == continue_menu_list[2]:
+		specifiedDropCollection()
+	elif returnValue == continue_menu_list[3]:
 		MainMenu()
+
+def specifiedDropCollection():
+
+	list_of_active_drop_collection = [
+	"The 2018 Inferno Collection",
+	"The 2018 Nuke Collection",
+	"The Bank Collection",
+	"The Dust 2 Collection",
+	"The Italy Collection",
+	"The Lake Collection",
+	"The Safehouse Collection",
+	"The Train Collection"
+	]
+
+	csgostash.MainWebLinkScrapper()
+
+	activeDropPoolCollectionLinks= []
+	
+	for eachCollectionKey in list_of_active_drop_collection:
+		link_to_collection = csgostash_link_database [csgostash.keyHandler(None, eachCollectionKey)]
+		activeDropPoolCollectionLinks.append(link_to_collection)
+	
+	Usercall_Passed_Link(activeDropPoolCollectionLinks)
+
+	all_in_one_specified_droppool_data = []
+	for each_collection_key in temporal_dataset_collection:
+		for each_item in temporal_dataset_collection[each_collection_key]:
+			all_in_one_specified_droppool_data.append(each_item)
+
+	tier = tierMenu()
+	if tier == "CLI":
+		commandLine()
+
+	wear = wearMenu()
+	if wear == "CLI":
+		commandLine()
+	
+	sorting = sortMenu()
+	if sorting == "CLI":
+		commandLine()
+
+	scale = scaleMenu()
+	if isinstance(scale,str):
+		commandLine()
+
+	print(all_in_one_specified_droppool_data,wear,tier,scale)
+	time.sleep(5)
+	displayer(all_in_one_specified_droppool_data,wear,tier,sorting,scale)
 
 
 def specifiedCollectionMenu(): 
@@ -134,7 +184,7 @@ def scaleMenu():
 
 def sortMenu():
 	statement = "Please Select the sorting order:"
-	list_of_sorting_order = ["Tier","Price"]
+	list_of_sorting_order = ["Tier : High to Low","Price : Low to High"]
 	listOfSortingOrderobj = Menu_RadioButton(list_of_sorting_order,statement)
 	return listOfSortingOrderobj.main()
 
@@ -151,7 +201,13 @@ def wearMenu():
 	return listOfWearobj.main()
 
 def helper():
-	pass
+	os.system("cls")
+	console.print("Trade up Helper for Counter Strike :Global Offensive",style = "green",justify="center")
+	console.print("Please help me to add help. Send the difficulties you face on Discord : [red]Ol'SdudeNT#6969[/red]")
+	print()
+	print("Press any key to continue...")
+	if getch():
+		MainMenu()
 
 def displayer(listOfData, wear = "Minimal Wear", tier = "Mil-Spec", sortOrder = "default",scale = 10):
 
@@ -160,23 +216,24 @@ def displayer(listOfData, wear = "Minimal Wear", tier = "Mil-Spec", sortOrder = 
 	footerText = "*N/A means the item(s) has no available price on SCM or the item(s) doesn't exist(s)." 
 	table = Table(title = headerText,width=80,caption =footerText )
 	table.add_column("Skin")
+	table.add_column("Collection")
 	table.add_column("Price")
 
 	if scale > len(listOfData):
 		scale = len(listOfData)
 	
-	if sortOrder == "Price":
+	if sortOrder == "Price : Low to High":
 		new_sorted_list = listSorter(listOfData,wear,tier)
 		if scale > len(new_sorted_list):
 			scale = len(new_sorted_list)
 		for index in range(scale):
-			table.add_row(listOfData[new_sorted_list[index][0]][0]+' | '+listOfData[new_sorted_list[index][0]][1],listOfData[new_sorted_list[index][0]][3][wearIndex(wear)])
+			table.add_row(listOfData[new_sorted_list[index][0]][0]+' | '+listOfData[new_sorted_list[index][0]][1],listOfData[new_sorted_list[index][0]][4],listOfData[new_sorted_list[index][0]][3][wearIndex(wear)])
 	else:
 		tierformattedlist = TierFilter(listOfData,tier)
 		if scale > len(tierformattedlist):
 			scale = len(tierformattedlist)
 		for x in range(scale):
-			table.add_row(tierformattedlist[x][0]+' | '+tierformattedlist[x][1], tierformattedlist[x][3][wearIndex(wear)])
+			table.add_row(tierformattedlist[x][0]+' | '+tierformattedlist[x][1],tierformattedlist[x][4], tierformattedlist[x][3][wearIndex(wear)])
 	os.system('cls')
 	console.rule()
 	console.print(table,justify="center")
@@ -191,7 +248,7 @@ def displayer(listOfData, wear = "Minimal Wear", tier = "Mil-Spec", sortOrder = 
 		print(temporal_dataset_collection)
 		listOfData = []
 		print(listOfData)
-		time.sleep(10)
+		# time.sleep(10)
 		MainMenu()
 
 def TierFilter(datalist,tier):
@@ -206,6 +263,7 @@ def listSorter(datas,wear,tier):
 	list_of_indices = []
 	sorted_list_indices = []
 	weapon_wear_index = wearIndex(wear) 
+
 	for eachItem in datas:
 		if eachItem[2] == tier:
 			list_of_indices.append((datas.index(eachItem),priceStripper(eachItem[3][weapon_wear_index])))

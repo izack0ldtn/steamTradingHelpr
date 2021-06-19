@@ -88,6 +88,9 @@ def Collection_weapon_link_scrapper(urls):  #Passed a weapon skin link, Returns 
 	priceStore = priceStore.find_all('div',class_= "btn-group-sm btn-group-justified")
 	weapon_skin_data.append(priceListMaker(priceStore))
 
+	parent_collection = soup.find("p",class_="collection-text-label").text
+	weapon_skin_data.append(parent_collection)
+
 	return weapon_skin_data
 
 
