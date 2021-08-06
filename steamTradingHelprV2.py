@@ -1,4 +1,3 @@
-from bs4.element import AttributeValueWithCharsetSubstitution
 import steamWeaponReceiver as csgostash
 from steamWeaponReceiver import collection_database,csgostash_link_database
 import os
