@@ -307,6 +307,4 @@ def commandLine():
 
 MainMenu()
 
-def main():
-	# csgostash.MainWebLinkScrapper()
-	pass
+
